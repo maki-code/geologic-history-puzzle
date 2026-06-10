@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>地史判読シミュレーション・パズル</title>
     <style>
-        
         :root {
             --bg-main: #0f172a;
             --bg-card: #1e293b;
@@ -167,7 +166,7 @@
         }
 
         @keyframes pulse {
-            0% { transform: scale(1); }
+            0 { transform: scale(1); }
             50% { transform: scale(1.03); }
             100% { transform: scale(1); }
         }
@@ -231,6 +230,7 @@
         .timeline-item.sed-4 { border-left-color: #34495e; }
         .timeline-item.fold { border-left-color: #9b59b6; }
         .timeline-item.fault { border-left-color: #e67e22; }
+        .timeline-item.rev-fault { border-left-color: #d35400; }
         .timeline-item.erosion { border-left-color: #16a085; }
         .timeline-item.intrusion { border-left-color: #e74c3c; }
 
@@ -312,63 +312,80 @@
             margin: auto 0;
         }
 
-    #helpOverlay {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(15, 23, 42, 0.9);
-    display: none; /* 初期は非表示 */
-    z-index: 1000;
-    padding: 40px;
-    overflow-y: auto;
-    color: var(--text-main);
-}
-.help-content {
-    max-width: 800px;
-    margin: 0 auto;
-    background: var(--bg-card);
-    padding: 30px;
-    border-radius: 8px;
-    border: 1px solid var(--accent);
-}
+        #helpOverlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.9);
+            display: none;
+            z-index: 1000;
+            padding: 40px;
+            overflow-y: auto;
+            color: var(--text-main);
+        }
+        
+        .help-content {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--bg-card);
+            padding: 30px;
+            border-radius: 8px;
+            border: 1px solid var(--accent);
+        }
+
+        .btn-regenerate {
+            background-color: #2563eb;
+            color: white;
+            padding: 6px 12px;
+            font-size: 12px;
+            font-weight: bold;
+            border: none;
+            margin-bottom: 5px;
+        }
+        .btn-regenerate:hover {
+            background-color: #1d4ed8;
+            border-color: var(--accent);
+        }
     </style>
 </head>
 <body>
-<div id="helpOverlay">
-    <div class="help-content">
-        <h1>遊び方：地史判読パズル</h1>
-        
-        <h2>概要</h2>
-        <p>このアプリケーションは、地質学の基本法則である「地層累重の法則」と「交差切りの法則」を、ブラウザ上の操作を通して体感的に理解するための教育用論理パズルです。</p>
 
-        <h2>本アプリの教育的意図と特徴</h2>
-        <ul>
-            <li><strong>法則の視覚化</strong>: 堆積、褶曲、断層、不整合（浸食）、マグマの貫入といった地質イベントを組み合わせることで、地質断面図がどのように変化するかをリアルタイムに確認できます。</li>
-            <li><strong>等結果性の許容</strong>: 現実の地史においては、異なるイベント順序が同一の地質構造を生み出すことがあります。本システムでは「最終的な地質断面図のピクセル一致率」で正誤判定を行うため、科学的に妥当な別解を不当に弾きません。</li>
-        </ul>
+    <div id="helpOverlay">
+        <div class="help-content">
+            <h1>遊び方：地史判読パズル</h1>
+            
+            <h2>概要</h2>
+            <p>このアプリケーションは、地質学の基本法則である「地層累重の法則」と「交差切りの法則」を、ブラウザ上の操作を通して体感的に理解するための教育用論理パズルです。</p>
 
-        <h2>遊び方・使い方</h2>
-        <ol>
-            <li>画面右側の「目標の断面図」を完成させることを目指します。</li>
-            <li>画面下部のボタンから地質イベントを追加し、タイムラインを構築します。</li>
-            <li>タイムラインの「▲」「▼」でイベント順序を入れ替え、断面図の変化を観察します。</li>
-            <li>左側の「あなたの断面図」が目標と97%以上一致すればクリアです。</li>
-        </ol>
+            <h2>本アプリの教育的意図と特徴</h2>
+            <ul>
+                <li><strong>法則の視覚化</strong>: 堆積、褶曲、断層、不整合（侵食）、マグマの貫入といった地質イベントを組み合わせることで、地質断面図がどのように変化するかをリアルタイムに確認できます。</li>
+                <li><strong>等結果性の許容</strong>: 現実の地史においては、異なるイベント順序が同一の地質構造を生み出すことがあります。本システムでは「最終的な地質断面図のピクセル一致率」で正誤判定を行うため、科学的に妥当な別解を不当に弾きません。</li>
+                <li><strong>科学的整合性</strong>: マグマの貫入イベントは、当時の地表を突き抜けない（突き抜けると「噴出」になるため）ように制御され、地中深部で冷え固まる挙動を再現しています。</li>
+            </ul>
 
-        <button onclick="toggleHelp(false)" style="margin-top:20px; padding: 10px 20px;">パズルに戻る</button>
+            <h2>遊び方・使い方</h2>
+            <ol>
+                <li>画面右側の「目標の断面図」を完成させることを目指します。</li>
+                <li>「🎲 目標をランダム再生成」ボタンを押すと、毎回異なるオリジナルの地史問題が自動生成されます。</li>
+                <li>画面下部のボタンから地質イベントを追加し、タイムラインを構築します。</li>
+                <li>タイムラインの「▲」「▼」でイベント順序を入れ替え、断面図の変化を観察します。</li>
+                <li>左側の「あなたの断面図」が目標と97%以上一致すればクリアです。</li>
+            </ol>
+
+            <button onclick="toggleHelp(false)" style="margin-top:20px; padding: 10px 20px;">パズルに戻る</button>
+        </div>
     </div>
-</div>
+
     <header>
         <h1>地史判読シミュレーション・パズル</h1>
-        <button onclick="toggleHelp(true)">💡 遊び方・説明書</button>
+        <button onclick="toggleHelp(true)" style="float: right; margin-top: -35px;">💡 遊び方・説明書</button>
         <div class="subtitle">地層累重の法則・交差切りの法則を動的に体感する論理パズル</div>
     </header>
 
     <div class="container">
         
-        <!-- メインパネル (左側) -->
         <div class="main-panel">
             
-            <!-- 断面図ワークスペース -->
             <div class="card">
                 <div class="workspace">
                     <div class="canvas-container">
@@ -377,12 +394,12 @@
                     </div>
                     <div class="canvas-container">
                         <div class="canvas-label">目標の断面図（再現対象）</div>
+                        <button class="btn-regenerate" onclick="generateRandomTarget(); updateWorkspace();">🎲 目標をランダム再生成</button>
                         <canvas id="targetCanvas" width="200" height="150"></canvas>
                     </div>
                 </div>
             </div>
 
-            <!-- スコア判定・進捗 -->
             <div class="card score-section">
                 <h2>検証・一致度判定</h2>
                 <p class="subtitle">システムはイベントの「順序文字列」ではなく、「最終的なピクセル構造」の完全一致を評価しています（等結果性の許容）。</p>
@@ -393,7 +410,6 @@
                 <div id="clearMessage" class="clear-msg">★ クリア！見事な地史判読です！すべての構造的因果関係が論理的に整合しました。 ★</div>
             </div>
 
-            <!-- 操作イベント群 -->
             <div class="card">
                 <h2>地質イベントを追加</h2>
                 <p class="subtitle" style="margin-bottom:10px;">ボタンを押すと、タイムラインの末尾（最も新しいイベント）に構造変形操作が追加されます。</p>
@@ -404,12 +420,12 @@
                     <button onclick="addTimelineEvent('sediment', 4)">⏳ 石炭層を堆積</button>
                     <button onclick="addTimelineEvent('fold')">〰 褶曲を起こす</button>
                     <button onclick="addTimelineEvent('fault')">⚡ 正断層を起こす</button>
-                    <button onclick="addTimelineEvent('erosion')">✂ 浸食を行う</button>
+                    <button onclick="addTimelineEvent('reverse_fault')">🔺 逆断層を起こす</button>
+                    <button onclick="addTimelineEvent('erosion')">✂ 侵食を行う</button>
                     <button onclick="addTimelineEvent('intrusion')">🔥 マグマを貫入</button>
                 </div>
             </div>
 
-            <!-- タイムライン編集 -->
             <div class="card">
                 <h2>タイムライン（上：古い ➔ 下：新しい）</h2>
                 <p class="subtitle" style="margin-bottom:10px;">▲▼ボタンでイベントの相対的な前後関係（年代順序）を入れ替え、断面図のリアルタイム変化を観察しなさい。</p>
@@ -420,10 +436,8 @@
 
         </div>
 
-        <!-- サイドパネル (右側) -->
         <div class="side-panel">
             
-            <!-- 凡例 -->
             <div class="card">
                 <h2>岩石・構造の凡例</h2>
                 <div class="legend">
@@ -450,7 +464,6 @@
                 </div>
             </div>
 
-            <!-- 用語解説 -->
             <div class="card">
                 <h2>地質学の基本法則と概念</h2>
                 <div class="glossary">
@@ -463,12 +476,12 @@
                         <div class="glossary-desc">断層や火成岩の貫入は、それが「切っている・貫いている対象」よりも時間的に新しい。切られた側が古く、切った構造が新しい。</div>
                     </div>
                     <div>
-                        <div class="glossary-term">■ 不整合面（浸食）</div>
-                        <div class="glossary-desc">地層が隆起して浸食（削落）された後、再び沈降して新しい層が積もると不整合となる。下位の傾いた層を上位の水平な層がバッサリ切る「角度不整合」は大きな時間のギャップを示す。</div>
+                        <div class="glossary-term">■ 不整合面（侵食）</div>
+                        <div class="glossary-desc">地層が隆起して侵食（削落）された後、再び沈降して新しい層が積もると不整合となる。下位の傾いた層を上位の水平な層がバッサリ切る「角度不整合」は大きな時間のギャップを示す。</div>
                     </div>
                     <div>
-                        <div class="glossary-term">■ 正断層</div>
-                        <div class="glossary-desc">引張力によって生じる断層。傾斜した断層面の上側（上盤）が、下側（下盤）に対して相対的にずり下がる。</div>
+                        <div class="glossary-term">■ 正断層 / 逆断層</div>
+                        <div class="glossary-desc">引っ張る力で上盤がずり下がるのが正断層。押される力（圧縮力）で上盤がずり上がるのが逆断層。</div>
                     </div>
                     <div>
                         <div class="glossary-term">■ 褶曲</div>
@@ -482,11 +495,9 @@
     </div>
 
     <script>
-        // グローバル定数・解像度
         const W = 200;
         const H = 150;
 
-        // 岩石タイプ
         const AIR = 0;
         const SANDSTONE = 1;
         const MUDSTONE = 2;
@@ -494,7 +505,6 @@
         const COAL = 4;
         const INTRUSION = 5;
 
-        // 色定義
         const ROCK_COLORS = {
             [AIR]: '#ecf0f1',
             [SANDSTONE]: '#f1c40f',
@@ -504,20 +514,10 @@
             [INTRUSION]: '#e74c3c'
         };
 
-        // ユーザーの現在のタイムライン
         let userTimeline = [];
+        let targetEvents = [];
+        let targetGrid = [];
 
-        // 目標の固定イベント列
-        const targetEvents = [
-            { type: 'sediment', rock: SANDSTONE, name: '砂岩層の堆積' },
-            { type: 'sediment', rock: MUDSTONE, name: '泥岩層の堆積' },
-            { type: 'fault', name: '正断層の形成' },
-            { type: 'erosion', name: '浸食（不整合面の形成）' },
-            { type: 'sediment', rock: LIMESTONE, name: '石灰岩層の堆積' },
-            { type: 'intrusion', name: 'マグマの貫入' }
-        ];
-
-        // グリッド生成（空バッファ）
         function createEmptyGrid() {
             let grid = [];
             for (let y = 0; y < H; y++) {
@@ -526,13 +526,11 @@
             return grid;
         }
 
-        // イベント変形操作の実装
         function applyEvent(grid, event) {
             if (event.type === 'sediment') {
-                let thick = 22; // 固定厚さ
+                let thick = 22;
                 let rock = event.rock;
                 
-                // 各Xの現在の地表面（上から見て最初に空でない座標）をスキャン
                 let surface = new Array(W).fill(H);
                 for (let x = 0; x < W; x++) {
                     for (let y = 0; y < H; y++) {
@@ -543,12 +541,10 @@
                     }
                 }
                 
-                // 初生水平の法則に基づき、最も高い地表面(最小のY)を基準に水平に堆積
                 let minExposedY = Math.min(...surface);
                 let newTopY = minExposedY - thick;
                 if (newTopY < 0) newTopY = 0;
                 
-                // 凹地を埋めつつ水平トップを持つ新しい層を形成
                 for (let x = 0; x < W; x++) {
                     for (let y = newTopY; y < surface[x]; y++) {
                         grid[y][x] = rock;
@@ -566,7 +562,6 @@
                     }
                 }
                 let minExposedY = Math.min(...surface);
-                // 最上部からさらに18px分下まで水平にバッサリ削り取る
                 let cutY = minExposedY + 18;
                 if (cutY > H) cutY = H;
                 
@@ -579,7 +574,6 @@
             else if (event.type === 'fold') {
                 let nextGrid = createEmptyGrid();
                 for (let x = 0; x < W; x++) {
-                    // 振幅12px、約1.2周期の波状変形
                     let dy = Math.round(11 * Math.sin((x / W) * Math.PI * 2 * 1.2));
                     for (let y = 0; y < H; y++) {
                         let oldY = y - dy;
@@ -590,21 +584,17 @@
                         }
                     }
                 }
-                // グリッドの上書き
                 for (let y = 0; y < H; y++) {
                     for (let x = 0; x < W; x++) grid[y][x] = nextGrid[y][x];
                 }
             } 
             else if (event.type === 'fault') {
                 let nextGrid = createEmptyGrid();
-                let D = 15; // スライド変位量
-                // 傾斜45度の断層基準線： y = x - W/2 + H/2 + 15
+                let D = 15; 
                 for (let x = 0; x < W; x++) {
                     let lineY = x - W/2 + H/2 + 15;
                     for (let y = 0; y < H; y++) {
                         if (y < lineY) {
-                            // 上盤（右側ブロック）が斜め右下に正断層としてずり下がる
-                            // 逆写像マッピング：現在(x, y)のソースは(x-D, y-D)
                             let oldX = x - D;
                             let oldY = y - D;
                             if (oldX >= 0 && oldX < W && oldY >= 0 && oldY < H) {
@@ -613,7 +603,6 @@
                                 nextGrid[y][x] = AIR;
                             }
                         } else {
-                            // 下盤（左側ブロック）は不動
                             nextGrid[y][x] = grid[y][x];
                         }
                     }
@@ -621,22 +610,53 @@
                 for (let y = 0; y < H; y++) {
                     for (let x = 0; x < W; x++) grid[y][x] = nextGrid[y][x];
                 }
-            } 
-            else if (event.type === 'intrusion') {
-                // マグマの貫入：既存の全ての幾何学構造を熱源として上書き破壊
+            }
+            else if (event.type === 'reverse_fault') {
+                let nextGrid = createEmptyGrid();
+                let D = 15; 
+                for (let x = 0; x < W; x++) {
+                    let lineY = x - W/2 + H/2 + 15;
+                    for (let y = 0; y < H; y++) {
+                        if (y < lineY) {
+                            let oldX = x + D;
+                            let oldY = y + D;
+                            if (oldX >= 0 && oldX < W && oldY >= 0 && oldY < H) {
+                                nextGrid[y][x] = grid[oldY][oldX];
+                            } else {
+                                nextGrid[y][x] = AIR;
+                            }
+                        } else {
+                            nextGrid[y][x] = grid[y][x];
+                        }
+                    }
+                }
                 for (let y = 0; y < H; y++) {
-                    // 中央付近に、わずかな傾きとうねりを持つ岩脈の形状関数を定義
+                    for (let x = 0; x < W; x++) grid[y][x] = nextGrid[y][x];
+                }
+            }
+            else if (event.type === 'intrusion') {
+                let surface = new Array(W).fill(H);
+                for (let x = 0; x < W; x++) {
+                    for (let y = 0; y < H; y++) {
+                        if (grid[y][x] !== AIR) {
+                            surface[x] = y;
+                            break;
+                        }
+                    }
+                }
+                for (let y = 0; y < H; y++) {
                     let centerX = W / 2 + 5 + (H / 2 - y) * 0.15 + Math.sin(y / 7) * 3;
                     for (let x = 0; x < W; x++) {
                         if (Math.abs(x - centerX) < 7) {
-                            grid[y][x] = INTRUSION;
+                            if (y > surface[x] + 12) {
+                                grid[y][x] = INTRUSION;
+                            }
                         }
                     }
                 }
             }
         }
 
-        // テクスチャ付き描画ロジック
         function drawGrid(canvasId, grid) {
             let canvas = document.getElementById(canvasId);
             let ctx = canvas.getContext('2d');
@@ -648,19 +668,17 @@
                     ctx.fillStyle = ROCK_COLORS[type];
                     ctx.fillRect(x, y, 1, 1);
                     
-                    // 専門的な地質図らしいテクスチャパターンの1ピクセルオーバーレイ
                     if (type === SANDSTONE) {
                         if ((x * 11 + y * 13) % 19 === 0) {
-                            ctx.fillStyle = '#b7950b'; // 砂岩のドット
+                            ctx.fillStyle = '#b7950b';
                             ctx.fillRect(x, y, 1, 1);
                         }
                     } else if (type === MUDSTONE) {
                         if (y % 4 === 0) {
-                            ctx.fillStyle = '#7f8c8d'; // 泥岩の平行葉理
+                            ctx.fillStyle = '#7f8c8d';
                             ctx.fillRect(x, y, 1, 1);
                         }
                     } else if (type === LIMESTONE) {
-                        // 石灰岩の方形模様（格子）
                         if (y % 6 === 0 || (x + (Math.floor(y / 6) % 2) * 3) % 6 === 0) {
                             ctx.fillStyle = '#ffffff';
                             ctx.fillRect(x, y, 1, 1);
@@ -671,7 +689,6 @@
                             ctx.fillRect(x, y, 1, 1);
                         }
                     } else if (type === INTRUSION) {
-                        // 火成岩記号（斜め格子網掛け）
                         if ((x + y) % 8 === 0 || (x - y) % 8 === 0) {
                             ctx.fillStyle = '#fadbd8';
                             ctx.fillRect(x, y, 1, 1);
@@ -681,16 +698,64 @@
             }
         }
 
-        // 目標の初期生成と描画
-        let targetGrid = createEmptyGrid();
-        targetEvents.forEach(e => applyEvent(targetGrid, e));
+        // 【新機能】論理的な地史プロセスをランダム生成するアルゴリズム
+        function generateRandomTarget() {
+            let events = [];
+            let rocks = [SANDSTONE, MUDSTONE, LIMESTONE, COAL];
+            let lastRock = AIR;
+
+            function getRandRock() {
+                let available = rocks.filter(r => r !== lastRock);
+                let r = available[Math.floor(Math.random() * available.length)];
+                lastRock = r;
+                return r;
+            }
+
+            // 1. 基盤の堆積 (2〜3層)
+            let initLayers = 2 + Math.floor(Math.random() * 2);
+            let rockNames = {1:'砂岩層', 2:'泥岩層', 3:'石灰岩層', 4:'石炭層'};
+            for(let i=0; i<initLayers; i++) {
+                let r = getRandRock();
+                events.push({ type: 'sediment', rock: r, name: rockNames[r] + 'の堆積' });
+            }
+
+            // 2. 第一次地殻変動 (褶曲、正断層、逆断層からランダム)
+            let tec1 = ['fold', 'fault', 'reverse_fault'][Math.floor(Math.random() * 3)];
+            let tecNames = {fold: '褶曲の形成', fault: '正断層の形成', reverse_fault: '逆断層の形成'};
+            events.push({ type: tec1, name: tecNames[tec1] });
+
+            // 3. 不整合（侵食と再堆積）の導入 (70%の確率で発生)
+            if (Math.random() < 0.7) {
+                events.push({ type: 'erosion', name: '侵食（不整合面）' });
+                let r = getRandRock();
+                events.push({ type: 'sediment', rock: r, name: rockNames[r] + 'の堆積' });
+            }
+
+            // 4. 後期構造イベント (マグマ貫入、または第2の断層、あるいは無し)
+            let roll = Math.random();
+            if (roll < 0.4) {
+                events.push({ type: 'intrusion', name: 'マグマの貫入' });
+            } else if (roll < 0.7) {
+                let tec2 = ['fault', 'reverse_fault'][Math.floor(Math.random() * 2)];
+                events.push({ type: tec2, name: tecNames[tec2] });
+            }
+
+            targetEvents = events;
+            
+            // 目標断面図のレンダリング
+            targetGrid = createEmptyGrid();
+            targetEvents.forEach(e => applyEvent(targetGrid, e));
+            drawGrid('targetCanvas', targetGrid);
+            
+            // ユーザー側の進捗表示もリセットして同期
+            userTimeline = [];
+        }
         
         window.onload = function() {
-            drawGrid('targetCanvas', targetGrid);
+            generateRandomTarget(); // 初回起動時にも自動生成
             updateWorkspace();
         };
 
-        // タイムライン追加
         function addTimelineEvent(type, rockType = null) {
             let name = '';
             let className = type;
@@ -703,7 +768,8 @@
             } else {
                 if (type === 'fold') name = '褶曲の形成';
                 if (type === 'fault') name = '正断層の形成';
-                if (type === 'erosion') name = '浸食（不整合面）';
+                if (type === 'reverse_fault') name = '逆断層の形成';
+                if (type === 'erosion') name = '侵食（不整合面）';
                 if (type === 'intrusion') name = 'マグマの貫入';
             }
 
@@ -718,20 +784,17 @@
             updateWorkspace();
         }
 
-        // タイムライン削除
         function removeEvent(id) {
             userTimeline = userTimeline.filter(e => e.id !== id);
             updateWorkspace();
         }
 
-        // タイムライン位置移動
         function moveEvent(id, direction) {
             let index = userTimeline.findIndex(e => e.id === id);
             if (index === -1) return;
             let nextIndex = index + direction;
             if (nextIndex < 0 || nextIndex >= userTimeline.length) return;
 
-            // スワップ
             let temp = userTimeline[index];
             userTimeline[index] = userTimeline[nextIndex];
             userTimeline[nextIndex] = temp;
@@ -739,17 +802,13 @@
             updateWorkspace();
         }
 
-        // メイン更新ロジック
         function updateWorkspace() {
-            // ユーザー断面図の計算
             let userGrid = createEmptyGrid();
             userTimeline.forEach(e => applyEvent(userGrid, e));
             drawGrid('userCanvas', userGrid);
 
-            // UIレンダリング
             renderTimelineUI();
 
-            // 一致率の計算
             let matchPercentage = 0;
             if (userTimeline.length > 0) {
                 let matchedPixels = 0;
@@ -763,10 +822,8 @@
                 matchPercentage = Math.floor((matchedPixels / (W * H)) * 100);
             }
 
-            // 特例：タイムライン空のときは0%
             if (userTimeline.length === 0) matchPercentage = 0;
 
-            // バーの更新
             let bar = document.getElementById('progressBar');
             let text = document.getElementById('progressText');
             bar.style.width = matchPercentage + '%';
@@ -781,12 +838,10 @@
             }
         }
 
-        // タイムラインUI構築
         function renderTimelineUI() {
             let container = document.getElementById('timeline');
             let hint = document.getElementById('emptyHint');
             
-            // 既存ノードクリア（ヒント以外）
             let items = container.querySelectorAll('.timeline-item');
             items.forEach(i => i.remove());
 
@@ -818,10 +873,10 @@
                 container.appendChild(item);
             });
         }
-     // 【追加】説明書の表示切り替え関数
-function toggleHelp(show) {
-    document.getElementById('helpOverlay').style.display = show ? 'block' : 'none';
-}   
+
+        function toggleHelp(show) {
+            document.getElementById('helpOverlay').style.display = show ? 'block' : 'none';
+        }
     </script>
 </body>
 </html>

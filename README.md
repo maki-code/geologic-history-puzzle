@@ -12,7 +12,7 @@
 
 ## 遊び方・使い方
 以下のURLからブラウザで直接アクセスして実行できます。
-👉 **[ここにGitHub PagesのURLを記載する]**
+👉 **https://maki-code.github.io/geologic-history-puzzle/index.html**
 
 1. 画面右側に表示される「目標の断面図」を確認します。
 2. 画面下部のボタンから地質イベントを追加し、タイムラインを構築します。
